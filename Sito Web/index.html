@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="IT-it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>Fantacalcio</title>
+    <style>
+        body {
+            background-image: url("background.jpeg");
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="">
+                <img src="logo.jpeg" width="30" height="30" class="d-inline-block align-top" alt="">
+                Fantacalcio</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                onclick="richiesta(`I.php?user=${document.getElementById('user').value}`)">Minifantasquadra
+                                acquistata</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                onclick="richiesta(`II.php?user=${document.getElementById('user').value}`)">Formazione
+                                corrente Minifantasquadra</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="richiesta('III.php')">Classifica lettori</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="richiesta('IV.php')">Primi 5 lettori</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="richiesta('V.php')">Primi 10 calciatori</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" onclick="richiesta('VI.php')">Classifica marcatori</a>
+                        </li>
+                    </ul>
+                    <div class="col-xs-2">
+                        <div class="input-group">
+                            <input type="text" id="user" class="form-control" placeholder="Username"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                            <span class="input-group-text" id="basic-addon1">@</span>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <table class="text-white mx-auto" id="risultato" style="text-align: center;"></table>
+    <script>
+
+        let risultato
+
+        function crea_riga(data, tag, amount) {
+            let tr = document.createElement('tr');
+            for (let i = 0; i < data.length - amount; i++) {
+                let td = document.createElement(tag);
+                td.setAttribute('class', 'border border-white')
+                td.appendChild(document.createTextNode(data[i]));
+                tr.appendChild(td);
+            }
+            risultato.appendChild(tr);
+        }
+
+        function richiesta(query) {
+            fetch(`http://localhost:63342/fantacalcio/${query}`)
+                .then(r => r.json())
+                .then(b => {
+                    risultato = document.getElementById('risultato')
+                    document.getElementById("risultato").innerHTML = ''
+                    if (b[b.length - 1].length === 0)
+                        throw null
+                    crea_riga(b, 'th', 1)
+                    let data = b[b.length - 1]
+                    for (let i = 0; i < data.length; i++)
+                        crea_riga(data[i], 'td', 0)
+                })
+                .catch(ex => { document.getElementById("risultato").innerText = "NESSUN DATO DISPONIBILE" })
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"
+        integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
